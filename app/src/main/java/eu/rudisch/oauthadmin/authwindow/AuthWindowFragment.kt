@@ -12,6 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import eu.rudisch.oauthadmin.databinding.FragmentAuthWindowBinding
+import eu.rudisch.oauthadmin.network.CODE_URL
+import eu.rudisch.oauthadmin.network.OAUTH_AUTHORIZE_PATH
+import eu.rudisch.oauthadmin.network.OAUTH_SCHEME
 
 
 /**
@@ -51,7 +54,7 @@ class AuthWindowFragment : Fragment() {
         authWindow.overScrollMode = WebView.OVER_SCROLL_NEVER
         authWindow.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if (AuthWindowViewModel.OAUTH_SCHEME in url && AuthWindowViewModel.OAUTH_PATH !in url) {
+                if (OAUTH_SCHEME in url && OAUTH_AUTHORIZE_PATH !in url) {
                     viewModel.checkUrlAndPostCode(url)
                     return true //this might be unnecessary because another Activity
 
@@ -59,7 +62,7 @@ class AuthWindowFragment : Fragment() {
                 return false // then it is not handled by default action
             }
         }
-        authWindow.loadUrl(AuthWindowViewModel.codeUrl)
+        authWindow.loadUrl(CODE_URL)
     }
 
 }
