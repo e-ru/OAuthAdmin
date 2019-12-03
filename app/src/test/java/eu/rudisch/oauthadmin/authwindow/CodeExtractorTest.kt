@@ -13,7 +13,7 @@ internal class CodeExtractorTest {
 
         val fooCode = "fooCode"
         val url = "http://localhost:8889/redirect.html?code=${fooCode}"
-        val code = codeExtractor.extractDodeFromUrl(url)
+        val code = codeExtractor.extractCodeFromUrl(url)
 
         Assertions.assertEquals(fooCode, code)
     }
@@ -24,7 +24,7 @@ internal class CodeExtractorTest {
 
         val fooCode = "fooCode"
         val url = "http://localhost:8889/redirect.${fooCode}"
-        val code = codeExtractor.extractDodeFromUrl(url)
+        val code = codeExtractor.extractCodeFromUrl(url)
 
         Assertions.assertEquals("", code)
     }
