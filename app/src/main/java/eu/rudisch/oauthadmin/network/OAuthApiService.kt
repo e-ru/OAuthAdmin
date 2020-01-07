@@ -38,13 +38,13 @@ interface OAuthApiService {
 
     @FormUrlEncoded
     @POST(OAUTH_TOKEN_PATH)
-    fun retreiveToken(
+    fun retrieveTokenAsync(
         @Field("grant_type") grantType: String = GRANT_TYPE,
         @Field("code") code: String,
         @Field("redirect_uri") redirectUri: String = REDIRECT_URL,
         @Field("client_id") clientId: String = CLIENT_ID,
         @Field("scope") scope: String = SCOPE
-    ): Deferred<OAuthTokenData>
+    ): Deferred<NetworkOAuthTokenData>
 }
 
 object OAuthApi {
