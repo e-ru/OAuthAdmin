@@ -3,8 +3,10 @@ package eu.rudisch.oauthadmin.authwindow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import eu.rudisch.oauthadmin.domain.OAuthTokenData
 import eu.rudisch.oauthadmin.network.OAuthApi
-import eu.rudisch.oauthadmin.network.OAuthTokenData
+import eu.rudisch.oauthadmin.network.NetworkOAuthTokenData
+import eu.rudisch.oauthadmin.network.asDomainModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,18 +47,19 @@ class AuthWindowViewModel : ViewModel() {
 
     private fun retrieveAccessToken(code: String) {
         coroutineScope.launch {
-            val retrieveTokenDeferred = OAuthApi.retrofitService.retreiveToken(code = code)
+            val retrieveTokenDeferred = OAuthApi.retrofitService.retrieveTokenAsync(code = code)
             try {
                 _status.value = OAuthApiStatus.LOADING
                 val result = retrieveTokenDeferred.await()
-                Timber.i("accessToken: $result")
+                Timber.i("accessTokenNetwork: $result")
 
                 _status.value = OAuthApiStatus.DONE
-                _accessToken.value = result
+                _accessToken.value = result.asDomainModel()
+                Timber.i("OAuthTokenData: ${_accessToken.value}")
                 _loggedIn.value = result.accessToken != ""
             } catch (e: Exception) {
                 _status.value = OAuthApiStatus.ERROR
-                _accessToken.value = OAuthTokenData()
+                _accessToken.value = NetworkOAuthTokenData().asDomainModel()
             }
         }
     }
