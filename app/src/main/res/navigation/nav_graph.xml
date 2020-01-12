@@ -20,7 +20,11 @@
         android:label="fragment_auth_window"
         tools:layout="@layout/fragment_auth_window" >
         <action
-            android:id="@+id/action_authWindowFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            android:id="@+id/action_authWindowFragment_to_OAuthUsersFragment"
+            app:destination="@id/OAuthUsersFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/OAuthUsersFragment"
+        android:name="eu.rudisch.oauthadmin.oauthusers.OAuthUsersFragment"
+        android:label="OAuthUsersFragment" />
 </navigation>
