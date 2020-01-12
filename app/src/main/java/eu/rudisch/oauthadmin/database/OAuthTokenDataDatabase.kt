@@ -1,12 +1,16 @@
 package eu.rudisch.oauthadmin.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface OAuthTokenDataDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(oAuthTokenDataEntity: OAuthTokenDataEntity)
+
+    @Query("SELECT * from oauth_token_data WHERE userName = :key")
+    fun get(key: String): LiveData<OAuthTokenDataEntity>
 }
 
 @Database(entities = [OAuthTokenDataEntity::class], version = 1)

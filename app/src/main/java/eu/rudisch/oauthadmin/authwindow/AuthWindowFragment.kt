@@ -40,7 +40,7 @@ class AuthWindowFragment : Fragment() {
             it?.let {
                 if (it) {
                     this.findNavController()
-                        .navigate(AuthWindowFragmentDirections.actionAuthWindowFragmentToLoginFragment())
+                        .navigate(AuthWindowFragmentDirections.actionAuthWindowFragmentToOAuthUsersFragment())
                 }
             }
         })

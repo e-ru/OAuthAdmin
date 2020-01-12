@@ -6,14 +6,13 @@ import eu.rudisch.oauthadmin.domain.OAuthTokenData
 
 @Entity(tableName = "oauth_token_data")
 class OAuthTokenDataEntity(
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L,
+    @PrimaryKey
+    val userName: String,
     val accessToken: String,
     val expiresIn: Int,
     val refreshToken: String,
-    val tokenType: String,
-    val userName: String,
-    val clientID: String
+    val clientID: String,
+    val tokenType: String
 )
 
 fun OAuthTokenDataEntity.asDomainModel(): OAuthTokenData {
