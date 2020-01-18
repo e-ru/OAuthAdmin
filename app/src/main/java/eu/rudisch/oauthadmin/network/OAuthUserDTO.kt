@@ -1,7 +1,7 @@
-package eu.rudisch.oauthadmin.network.oauthadmin
+package eu.rudisch.oauthadmin.network
 
 import com.squareup.moshi.JsonClass
-import eu.rudisch.oauthadmin.database.oauthadmin.DatabaseOAuthUser
+import eu.rudisch.oauthadmin.database.OAuthUserEntity
 
 @JsonClass(generateAdapter = true)
 data class NetworkOAuthUserContainer(val oAuthUsers: List<NetworkOAuthUser>)
@@ -20,9 +20,9 @@ data class NetworkOAuthUser(
     val roleNames: List<String>
 )
 
-fun NetworkOAuthUserContainer.asDatabaseModel(): Array<DatabaseOAuthUser> {
+fun NetworkOAuthUserContainer.asDatabaseModel(): Array<OAuthUserEntity> {
     return oAuthUsers.map {
-        DatabaseOAuthUser(
+        OAuthUserEntity(
             id = it.id,
             username = it.username,
             password = it.password,

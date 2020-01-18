@@ -25,7 +25,11 @@ class AuthWindowFragment : Fragment() {
     private lateinit var binding: FragmentAuthWindowBinding
 
     private val viewModel: AuthWindowViewModel by lazy {
-        ViewModelProviders.of(this).get(AuthWindowViewModel::class.java)
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onActivityCreated()"
+        }
+        ViewModelProviders.of(this, AuthWindowViewModel.Factory(activity.application))
+            .get(AuthWindowViewModel::class.java)
     }
 
     override fun onCreateView(

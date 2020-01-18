@@ -1,11 +1,11 @@
-package eu.rudisch.oauthadmin.database.oauthadmin
+package eu.rudisch.oauthadmin.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import eu.rudisch.oauthadmin.domain.OAuthUser
 
 @Entity(tableName = "oauth_users")
-data class DatabaseOAuthUser(
+data class OAuthUserEntity(
     @PrimaryKey
     val id: Int,
     val username: String,
@@ -19,7 +19,7 @@ data class DatabaseOAuthUser(
 //    val roleNames: List<String>
 )
 
-fun List<DatabaseOAuthUser>.asDomainModel(): List<OAuthUser> {
+fun List<OAuthUserEntity>.asDomainModel(): List<OAuthUser> {
     return map {
         OAuthUser(
             id = it.id,
