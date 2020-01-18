@@ -1,21 +1,18 @@
 package eu.rudisch.oauthadmin.authwindow
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
+import eu.rudisch.oauthadmin.database.getDatabase
 import eu.rudisch.oauthadmin.domain.OAuthTokenData
-import eu.rudisch.oauthadmin.network.OAuthApi
 import eu.rudisch.oauthadmin.network.NetworkOAuthTokenData
 import eu.rudisch.oauthadmin.network.asDomainModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import eu.rudisch.oauthadmin.repository.OAuthAdminRepository
+import kotlinx.coroutines.*
 import timber.log.Timber
 
 enum class OAuthApiStatus { LOADING, ERROR, DONE }
 
-class AuthWindowViewModel : ViewModel() {
+class AuthWindowViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _status = MutableLiveData<OAuthApiStatus>()
     val status: LiveData<OAuthApiStatus>
@@ -29,9 +26,12 @@ class AuthWindowViewModel : ViewModel() {
     val loggedIn: LiveData<Boolean>
         get() = _loggedIn
 
-    private var viewModelJob = Job()
+    private var viewModelJob = SupervisorJob()
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+    private val database = getDatabase(application)
+    private val oAuthAdminRepository = OAuthAdminRepository(database)
 
     init {
         _loggedIn.value = false
@@ -47,20 +47,30 @@ class AuthWindowViewModel : ViewModel() {
 
     private fun retrieveAccessToken(code: String) {
         coroutineScope.launch {
-            val retrieveTokenDeferred = OAuthApi.retrofitService.retrieveTokenAsync(code = code)
             try {
                 _status.value = OAuthApiStatus.LOADING
-                val result = retrieveTokenDeferred.await()
+                oAuthAdminRepository.receiveAccessToken(code)
+                val result = oAuthAdminRepository.oAuthTokenData.value
                 Timber.i("accessTokenNetwork: $result")
 
                 _status.value = OAuthApiStatus.DONE
-                _accessToken.value = result.asDomainModel()
+                _accessToken.value = result
                 Timber.i("OAuthTokenData: ${_accessToken.value}")
-                _loggedIn.value = result.accessToken != ""
+                _loggedIn.value = result?.accessToken != ""
             } catch (e: Exception) {
                 _status.value = OAuthApiStatus.ERROR
                 _accessToken.value = NetworkOAuthTokenData().asDomainModel()
             }
+        }
+    }
+
+    class Factory(val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(AuthWindowViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return AuthWindowViewModel(app) as T
+            }
+            throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
 }

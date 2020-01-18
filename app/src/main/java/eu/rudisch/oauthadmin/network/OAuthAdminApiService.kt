@@ -6,9 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 private const val OAUTH_SERVER = "http://192.168.188.109:9191"
 private const val OAUTH_TOKEN_PATH = "oauth/token"
@@ -23,19 +21,25 @@ const val OAUTH_SCHEME = "oauthadmin"
 const val CODE_URL =
     "${OAUTH_SERVER}/${OAUTH_AUTHORIZE_PATH}?response_type=${RESPONSE_TYPE}&scope=${SCOPE}&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}"
 
+private const val OAUTH_ADMIN_SERVER = "http://192.168.188.109:9292/admin"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 
-private val retrofit = Retrofit.Builder()
+private val retrofitBuilder = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
+
+private val retrofitAccessToken = retrofitBuilder
     .baseUrl(OAUTH_SERVER)
     .build()
 
-interface OAuthApiService {
+private val retrofitOAuthUsers = retrofitBuilder
+    .baseUrl(OAUTH_ADMIN_SERVER)
+    .build()
 
+interface OAuthAccessTokenService {
     @FormUrlEncoded
     @POST(OAUTH_TOKEN_PATH)
     fun retrieveTokenAsync(
@@ -47,6 +51,21 @@ interface OAuthApiService {
     ): Deferred<NetworkOAuthTokenData>
 }
 
-object OAuthApi {
-    val retrofitService: OAuthApiService by lazy { retrofit.create(OAuthApiService::class.java) }
+interface OAuthUsersApiService {
+    @GET("/users")
+    fun getOAuthUsers(@Header("Authorization") authorization: String): Deferred<NetworkOAuthUserContainer>
+}
+
+object OAuthAdminApi {
+    val retrofitAccessTokenService: OAuthAccessTokenService by lazy {
+        retrofitAccessToken.create(
+            OAuthAccessTokenService::class.java
+        )
+    }
+
+    val retrofitOAuthUsersService: OAuthUsersApiService by lazy {
+        retrofitOAuthUsers.create(
+            OAuthUsersApiService::class.java
+        )
+    }
 }
