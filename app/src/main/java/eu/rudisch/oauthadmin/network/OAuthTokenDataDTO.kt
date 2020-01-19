@@ -7,6 +7,7 @@ import eu.rudisch.oauthadmin.database.OAuthTokenDataEntity
 import eu.rudisch.oauthadmin.domain.OAuthTokenData
 import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
+import timber.log.Timber
 
 @Parcelize
 data class NetworkOAuthTokenData(
@@ -34,6 +35,8 @@ fun NetworkOAuthTokenData.asDomainModel(): OAuthTokenData {
 fun NetworkOAuthTokenData.asDatabaseModel(): OAuthTokenDataEntity {
     // TODO: move to util class
     val json = JSONObject(String(Base64.decode(accessToken.split(".")[1], Base64.DEFAULT)))
+    Timber.i("json: $json")
+
     return OAuthTokenDataEntity(
         accessToken = accessToken,
         expiresIn = expiresIn,

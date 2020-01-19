@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import eu.rudisch.oauthadmin.domain.OAuthTokenData
 
 @Entity(tableName = "oauth_token_data")
-class OAuthTokenDataEntity(
+data class OAuthTokenDataEntity(
     @PrimaryKey
     val userName: String,
     val accessToken: String,
