@@ -47,7 +47,7 @@ class OAuthAdminRepository(private val database: OAuthAdminDatabase) {
         withContext(Dispatchers.IO) {
             Timber.i("auth $authorization")
             try {
-                val oAuthUsers = OAuthAdminApi.retrofitOAuthUsersService.getOAuthUsers(authorization).await()
+                val oAuthUsers = OAuthAdminApi.retrofitOAuthUsersService.getOAuthUsers("Bearer $authorization").await()
                 database.oAuthAdminDao.insertAllOAuthUsers(*oAuthUsers.asDatabaseModel())
             } catch (ex: Exception) {
                 Timber.i("retro ex: $ex")

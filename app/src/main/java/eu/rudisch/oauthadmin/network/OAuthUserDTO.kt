@@ -16,8 +16,8 @@ data class NetworkOAuthUser(
     val enabled: Boolean,
     val accountExpired: Boolean,
     val credentialsExpired: Boolean,
-    val accountLocked: Boolean,
-    val roleNames: List<String>
+    val accountLocked: Boolean
+//    val roleNames: List<String>
 )
 
 fun NetworkOAuthUserContainer.asDatabaseModel(): Array<OAuthUserEntity> {
