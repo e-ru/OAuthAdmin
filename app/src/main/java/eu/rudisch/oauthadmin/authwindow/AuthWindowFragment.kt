@@ -15,6 +15,7 @@ import eu.rudisch.oauthadmin.databinding.FragmentAuthWindowBinding
 import eu.rudisch.oauthadmin.network.CODE_URL
 import eu.rudisch.oauthadmin.network.OAUTH_AUTHORIZE_PATH
 import eu.rudisch.oauthadmin.network.OAUTH_SCHEME
+import timber.log.Timber
 
 
 /**
@@ -58,7 +59,9 @@ class AuthWindowFragment : Fragment() {
         authWindow.overScrollMode = WebView.OVER_SCROLL_NEVER
         authWindow.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+
                 if (OAUTH_SCHEME in url && OAUTH_AUTHORIZE_PATH !in url) {
+                    Timber.i("auth url: $url")
                     viewModel.checkUrlAndPostCode(url)
                     return true //this might be unnecessary because another Activity
 

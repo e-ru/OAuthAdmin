@@ -22,20 +22,16 @@ class OAuthUserViewModel(application: Application) : AndroidViewModel(applicatio
     private val oAuthAdminRepository = OAuthAdminRepository(database)
 
 
-    init {
-//        val auth = accessToken.accessToken
-//        Timber.i("auth: $auth")
-//        if (auth != null) {
-            viewModelScope.launch {
-                val accessToken = oAuthAdminRepository.getAccessToken("eru")
-                Timber.i("accessTokenDBResult2: $accessToken")
-                if (accessToken != null)
-                    oAuthAdminRepository.refreshOAuthUsers(accessToken.accessToken)
-            }
+//    init {
+//        viewModelScope.launch {
+//            val accessToken = oAuthAdminRepository.getAccessToken("eru")
+//            Timber.i("accessTokenDBResult2: $accessToken")
+//            if (accessToken != null)
+//                oAuthAdminRepository.refreshOAuthUsers(accessToken.accessToken)
 //        }
-    }
+//    }
 
-    val oAuthUsers = oAuthAdminRepository.oAuthUsers
+//    val oAuthUsers = oAuthAdminRepository.oAuthUsers
 
     override fun onCleared() {
         super.onCleared()
