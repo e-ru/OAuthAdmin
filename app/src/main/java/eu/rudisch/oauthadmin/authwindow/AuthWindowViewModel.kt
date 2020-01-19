@@ -3,28 +3,16 @@ package eu.rudisch.oauthadmin.authwindow
 import android.app.Application
 import androidx.lifecycle.*
 import eu.rudisch.oauthadmin.database.getDatabase
-import eu.rudisch.oauthadmin.domain.OAuthTokenData
-import eu.rudisch.oauthadmin.network.NetworkOAuthTokenData
-import eu.rudisch.oauthadmin.network.asDomainModel
 import eu.rudisch.oauthadmin.repository.OAuthAdminRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 enum class OAuthApiStatus { LOADING, ERROR, DONE }
 
 class AuthWindowViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val _status = MutableLiveData<OAuthApiStatus>()
-    val status: LiveData<OAuthApiStatus>
-        get() = _status
-
-    private val _accessToken = MutableLiveData<OAuthTokenData>()
-    val accessToken: LiveData<OAuthTokenData>
-        get() = _accessToken
-
-    private val _loggedIn = MutableLiveData<Boolean>()
-    val loggedIn: LiveData<Boolean>
-        get() = _loggedIn
 
     private var viewModelJob = SupervisorJob()
 
@@ -32,6 +20,18 @@ class AuthWindowViewModel(application: Application) : AndroidViewModel(applicati
 
     private val database = getDatabase(application)
     private val oAuthAdminRepository = OAuthAdminRepository(database)
+
+    private val _status = MutableLiveData<OAuthApiStatus>()
+    val status: LiveData<OAuthApiStatus>
+        get() = _status
+
+    //    private val _accessToken = MutableLiveData<OAuthTokenData>()
+//    val accessToken = oAuthAdminRepository.oAuthTokenData
+//        get() = _accessToken
+
+    private val _loggedIn = MutableLiveData<Boolean>()
+    val loggedIn: LiveData<Boolean>
+        get() = _loggedIn
 
     init {
         _loggedIn.value = false
@@ -43,23 +43,26 @@ class AuthWindowViewModel(application: Application) : AndroidViewModel(applicati
         Timber.i("code: $code")
 
         retrieveAccessToken(code)
+//        val result = oAuthAdminRepository.oAuthTokenData
     }
 
     private fun retrieveAccessToken(code: String) {
         coroutineScope.launch {
             try {
+                val accessToken = oAuthAdminRepository.getAccessToken("eru")
+                Timber.i("accessTokenDBResult1: $accessToken")
+
                 _status.value = OAuthApiStatus.LOADING
                 oAuthAdminRepository.receiveAccessToken(code)
-                val result = oAuthAdminRepository.oAuthTokenData.value
-                Timber.i("accessTokenNetwork: $result")
 
                 _status.value = OAuthApiStatus.DONE
-                _accessToken.value = result
-                Timber.i("OAuthTokenData: ${_accessToken.value}")
-                _loggedIn.value = result?.accessToken != ""
+//                _accessToken.value = result.value
+//                Timber.i("OAuthTokenData: ${result.value}")
+                _loggedIn.value = true // result.value?.accessToken != ""
             } catch (e: Exception) {
+                Timber.i("Ex: $e")
                 _status.value = OAuthApiStatus.ERROR
-                _accessToken.value = NetworkOAuthTokenData().asDomainModel()
+//                _accessToken.value = NetworkOAuthTokenData().asDomainModel()
             }
         }
     }

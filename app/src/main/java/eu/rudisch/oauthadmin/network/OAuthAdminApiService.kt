@@ -21,7 +21,7 @@ const val OAUTH_SCHEME = "oauthadmin"
 const val CODE_URL =
     "${OAUTH_SERVER}/${OAUTH_AUTHORIZE_PATH}?response_type=${RESPONSE_TYPE}&scope=${SCOPE}&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}"
 
-private const val OAUTH_ADMIN_SERVER = "http://192.168.188.109:9292/admin"
+private const val OAUTH_ADMIN_SERVER = "http://192.168.188.109:9292"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -52,7 +52,7 @@ interface OAuthAccessTokenService {
 }
 
 interface OAuthUsersApiService {
-    @GET("/users")
+    @GET("admin/users")
     fun getOAuthUsers(@Header("Authorization") authorization: String): Deferred<NetworkOAuthUserContainer>
 }
 

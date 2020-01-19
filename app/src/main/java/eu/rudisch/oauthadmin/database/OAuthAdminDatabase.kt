@@ -16,7 +16,7 @@ interface OAuthAdminDao {
     fun insertAccessToken(oAuthTokenDataEntity: OAuthTokenDataEntity)
 
     @Query("SELECT * from oauth_token_data WHERE userName = :key")
-    fun getAccessToken(key: String): LiveData<OAuthTokenDataEntity>
+    fun getAccessToken(key: String): OAuthTokenDataEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllOAuthUsers(vararg oAuthUsers: OAuthUserEntity)

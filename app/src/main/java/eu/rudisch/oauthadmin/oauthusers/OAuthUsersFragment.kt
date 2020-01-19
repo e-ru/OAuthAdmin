@@ -26,6 +26,7 @@ class OAuthUsersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentOauthusersBinding.inflate(inflater)
 
         viewModel.oAuthUsers.observe(this, Observer {
             it.let {

@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class OAuthUserViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -20,13 +21,18 @@ class OAuthUserViewModel(application: Application) : AndroidViewModel(applicatio
     private val database = getDatabase(application)
     private val oAuthAdminRepository = OAuthAdminRepository(database)
 
+
     init {
-        val accessToken = oAuthAdminRepository.oAuthTokenData.value?.accessToken
-        if (accessToken != null) {
+//        val auth = accessToken.accessToken
+//        Timber.i("auth: $auth")
+//        if (auth != null) {
             viewModelScope.launch {
-                oAuthAdminRepository.refreshOAuthUsers(accessToken)
+                val accessToken = oAuthAdminRepository.getAccessToken("eru")
+                Timber.i("accessTokenDBResult2: $accessToken")
+                if (accessToken != null)
+                    oAuthAdminRepository.refreshOAuthUsers(accessToken.accessToken)
             }
-        }
+//        }
     }
 
     val oAuthUsers = oAuthAdminRepository.oAuthUsers
