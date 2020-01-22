@@ -15,8 +15,8 @@ data class OAuthUserEntity(
     val enabled: Boolean,
     val accountExpired: Boolean,
     val credentialsExpired: Boolean,
-    val accountLocked: Boolean
-//    val roleNames: List<String>
+    val accountLocked: Boolean,
+    val roleNames: List<String>
 )
 
 fun List<OAuthUserEntity>.asDomainModel(): List<OAuthUser> {
@@ -30,8 +30,8 @@ fun List<OAuthUserEntity>.asDomainModel(): List<OAuthUser> {
             enabled = it.enabled,
             accountExpired = it.accountExpired,
             credentialsExpired = it.credentialsExpired,
-            accountLocked = it.accountLocked
-//            roleNames = it.roleNames
+            accountLocked = it.accountLocked,
+            roleNames = it.roleNames
         )
     }
 }

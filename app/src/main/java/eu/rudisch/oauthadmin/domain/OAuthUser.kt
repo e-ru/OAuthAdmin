@@ -9,8 +9,8 @@ data class OAuthUser(
     val enabled: Boolean,
     val accountExpired: Boolean,
     val credentialsExpired: Boolean,
-    val accountLocked: Boolean
-//    val roleNames: List<String>
+    val accountLocked: Boolean,
+    val roleNames: List<String>
 )
 
 //accountExpired: false

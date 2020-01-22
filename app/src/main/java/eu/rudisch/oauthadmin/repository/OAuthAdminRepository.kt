@@ -39,7 +39,7 @@ class OAuthAdminRepository(private val database: OAuthAdminDatabase) {
     }
 
     val oAuthUsers: LiveData<List<OAuthUser>> =
-        Transformations.map(database.oAuthAdminDao.getOAuthUsers()) {
+        Transformations.map(database.oAuthAdminDao.getOAuthUsersLiveData()) {
             it.asDomainModel()
         }
 
@@ -47,6 +47,9 @@ class OAuthAdminRepository(private val database: OAuthAdminDatabase) {
         withContext(Dispatchers.IO) {
             Timber.i("auth $authorization")
             try {
+
+//                val oAuthUser = OAuthAdminApi.retrofitOAuthUsersService.getOAuthUser("Bearer $authorization").await()
+//                database.oAuthAdminDao.insertAllOAuthUsers(oAuthUser.asDatabaseModel())
                 val oAuthUsers = OAuthAdminApi.retrofitOAuthUsersService.getOAuthUsers("Bearer $authorization").await()
                 database.oAuthAdminDao.insertAllOAuthUsers(*oAuthUsers.asDatabaseModel())
             } catch (ex: Exception) {

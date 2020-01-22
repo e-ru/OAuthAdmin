@@ -21,7 +21,8 @@ class OAuthAdminDatabaseTest {
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
-            context, OAuthAdminDatabase::class.java).build()
+            context, OAuthAdminDatabase::class.java
+        ).build()
         oAuthAdminDao = db.oAuthAdminDao
     }
 
@@ -35,15 +36,35 @@ class OAuthAdminDatabaseTest {
     @Throws(Exception::class)
     fun writeTokenAndReadToken() {
         val token = OAuthTokenDataEntity(
-            userName="testUser",
-            accessToken="foo",
-            expiresIn=1,
-            refreshToken="bar",
-            clientID="foobar",
-            tokenType="foofoo"
+            userName = "testUser",
+            accessToken = "foo",
+            expiresIn = 1,
+            refreshToken = "bar",
+            clientID = "foobar",
+            tokenType = "foofoo"
         )
         oAuthAdminDao.insertAccessToken(token)
         val t = oAuthAdminDao.getAccessToken("testUser")
         assertThat(t?.userName, equalTo("testUser"))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun writeOAuthUser() {
+        val oAuthUSer = OAuthUserEntity(
+            id = 1,
+            username = "testUSer",
+            password = "pass",
+            passwordRepeat = "pass",
+            email = "e@r.eu",
+            enabled = true,
+            accountExpired = false,
+            credentialsExpired = false,
+            accountLocked = false,
+            roleNames = listOf("testRole")
+        )
+        oAuthAdminDao.insertAllOAuthUsers(oAuthUSer)
+        val u = oAuthAdminDao.getOAuthUsers()
+        assert(u[0]?.roleNames.contains("testRole"))
     }
 }

@@ -31,8 +31,23 @@ fun NetworkOAuthUserContainer.asDatabaseModel(): Array<OAuthUserEntity> {
             enabled = it.enabled,
             accountExpired = it.accountExpired,
             credentialsExpired = it.credentialsExpired,
-            accountLocked = it.accountLocked
-//            roleNames = it.roleNames
+            accountLocked = it.accountLocked,
+            roleNames = it.roleNames
         )
     }.toTypedArray()
+}
+
+fun NetworkOAuthUser.asDatabaseModel(): OAuthUserEntity {
+    return OAuthUserEntity(
+            id = id,
+            username = username,
+            password = password,
+            passwordRepeat = passwordRepeat,
+            email = email,
+            enabled = enabled,
+            accountExpired = accountExpired,
+            credentialsExpired = credentialsExpired,
+            accountLocked = accountLocked,
+            roleNames = roleNames
+        )
 }
