@@ -20,6 +20,23 @@ data class NetworkOAuthUser(
     val roleNames: List<String>
 )
 
+fun List<NetworkOAuthUser>.asDatabaseModel(): Array<OAuthUserEntity> {
+    return this.map {
+        OAuthUserEntity(
+            id = it.id,
+            username = it.username,
+            password = it.password,
+            passwordRepeat = it.passwordRepeat,
+            email = it.email,
+            enabled = it.enabled,
+            accountExpired = it.accountExpired,
+            credentialsExpired = it.credentialsExpired,
+            accountLocked = it.accountLocked,
+            roleNames = it.roleNames
+        )
+    }.toTypedArray()
+}
+
 fun NetworkOAuthUserContainer.asDatabaseModel(): Array<OAuthUserEntity> {
     return oAuthUsers.map {
         OAuthUserEntity(
