@@ -4,6 +4,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Deferred
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
@@ -58,18 +59,23 @@ interface OAuthUsersApiService {
     fun getOAuthUser(@Header("Authorization") authorization: String): Deferred<NetworkOAuthUser>
 
     @GET("admin/users")
+//    fun getOAuthUsers(@Header("Authorization") authorization: String): Deferred<List<NetworkOAuthUser>>
     fun getOAuthUsers(@Header("Authorization") authorization: String): Deferred<NetworkOAuthUserContainer>
+}
+
+fun retrofitServiceFactory(baseUrl: String) : Retrofit {
+    return retrofitBuilder.baseUrl(baseUrl).build()
 }
 
 object OAuthAdminApi {
     val retrofitAccessTokenService: OAuthAccessTokenService by lazy {
-        retrofitAccessToken.create(
+        retrofitServiceFactory(OAUTH_SERVER).create(
             OAuthAccessTokenService::class.java
         )
     }
 
     val retrofitOAuthUsersService: OAuthUsersApiService by lazy {
-        retrofitOAuthUsers.create(
+        retrofitServiceFactory(OAUTH_ADMIN_SERVER).create(
             OAuthUsersApiService::class.java
         )
     }
