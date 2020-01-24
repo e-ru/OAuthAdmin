@@ -63,7 +63,9 @@ class OAuthAdminDatabaseTest {
             accountLocked = false,
             roleNames = listOf("testRole")
         )
-        oAuthAdminDao.insertAllOAuthUsers(oAuthUSer)
+
+        val array = arrayOf(oAuthUSer)
+        oAuthAdminDao.insertAllOAuthUsers(*array)
         val u = oAuthAdminDao.getOAuthUsers()
         assert(u[0]?.roleNames.contains("testRole"))
     }
