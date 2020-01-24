@@ -23,16 +23,12 @@ class OAuthUserViewModel(application: Application) : AndroidViewModel(applicatio
 
 
     init {
-//        val auth = accessToken.accessToken
-//        Timber.i("auth: $auth")
-//        if (auth != null) {
-            viewModelScope.launch {
-                val accessToken = oAuthAdminRepository.getAccessToken("eru")
-                Timber.i("accessTokenDBResult2: $accessToken")
-                if (accessToken != null)
-                    oAuthAdminRepository.refreshOAuthUsers(accessToken.accessToken)
-            }
-//        }
+        viewModelScope.launch {
+            val accessToken = oAuthAdminRepository.getAccessToken("eru")
+            Timber.i("accessTokenDBResult2: $accessToken")
+            if (accessToken != null)
+                oAuthAdminRepository.refreshOAuthUsers(accessToken.accessToken)
+        }
     }
 
     val oAuthUsers = oAuthAdminRepository.oAuthUsers

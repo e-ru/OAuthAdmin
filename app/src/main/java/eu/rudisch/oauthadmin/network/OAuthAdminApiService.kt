@@ -4,7 +4,6 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Deferred
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
@@ -24,8 +23,6 @@ const val CODE_URL =
 
 private const val OAUTH_ADMIN_SERVER = "http://192.168.188.109:9292"
 
-
-
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
@@ -34,13 +31,9 @@ private val retrofitBuilder = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
 
-private val retrofitAccessToken = retrofitBuilder
-    .baseUrl(OAUTH_SERVER)
-    .build()
-
-private val retrofitOAuthUsers = retrofitBuilder
-    .baseUrl(OAUTH_ADMIN_SERVER)
-    .build()
+fun retrofitServiceFactory(baseUrl: String): Retrofit {
+    return retrofitBuilder.baseUrl(baseUrl).build()
+}
 
 interface OAuthAccessTokenService {
     @FormUrlEncoded
@@ -55,16 +48,8 @@ interface OAuthAccessTokenService {
 }
 
 interface OAuthUsersApiService {
-    @GET("admin/users/single")
-    fun getOAuthUser(@Header("Authorization") authorization: String): Deferred<NetworkOAuthUser>
-
     @GET("admin/users")
-//    fun getOAuthUsers(@Header("Authorization") authorization: String): Deferred<List<NetworkOAuthUser>>
-    fun getOAuthUsers(@Header("Authorization") authorization: String): Deferred<NetworkOAuthUserContainer>
-}
-
-fun retrofitServiceFactory(baseUrl: String) : Retrofit {
-    return retrofitBuilder.baseUrl(baseUrl).build()
+    fun getOAuthUsersAsync(@Header("Authorization") authorization: String): Deferred<List<NetworkOAuthUser>>
 }
 
 object OAuthAdminApi {
