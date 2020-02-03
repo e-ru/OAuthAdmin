@@ -79,6 +79,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$version_Junit"
 
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$version_OkHttp"
+    androidTestImplementation "androidx.arch.core:core-testing:$version_core_testing"
 
     // Room database
     implementation "androidx.room:room-runtime:$version_room"

@@ -17,9 +17,6 @@ interface OAuthAdminDao {
 
     @Query("SELECT * FROM oauth_users")
     fun getOAuthUsersLiveData(): LiveData<List<OAuthUserEntity>>
-
-    @Query("SELECT * FROM oauth_users")
-    fun getOAuthUsers(): List<OAuthUserEntity>
 }
 
 @Database(entities = [OAuthTokenDataEntity::class, OAuthUserEntity::class], version = 1)
