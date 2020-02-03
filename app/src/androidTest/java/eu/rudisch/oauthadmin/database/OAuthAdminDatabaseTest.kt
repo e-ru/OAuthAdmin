@@ -1,13 +1,16 @@
 package eu.rudisch.oauthadmin.database
 
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import eu.rudisch.oauthadmin.util.getOrAwaitValue
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
@@ -16,6 +19,9 @@ import java.io.IOException
 class OAuthAdminDatabaseTest {
     private lateinit var oAuthAdminDao: OAuthAdminDao
     private lateinit var db: OAuthAdminDatabase
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun createDb() {
@@ -66,7 +72,9 @@ class OAuthAdminDatabaseTest {
 
         val array = arrayOf(oAuthUSer)
         oAuthAdminDao.insertAllOAuthUsers(*array)
-        val u = oAuthAdminDao.getOAuthUsers()
-        assert(u[0]?.roleNames.contains("testRole"))
+
+        val u = oAuthAdminDao.getOAuthUsersLiveData().getOrAwaitValue()
+        assert(u[0].roleNames.contains("testRole"))
+
     }
 }
